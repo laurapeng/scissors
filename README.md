@@ -6,21 +6,18 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-This package enables researchers to efficiently, accurately, and
-reproducibly uncover rare celltypes and other small subgroups using an
-iterative reclustering optimization routine built as an extension to a
-typical `Seurat` workflow. Tools are included to preprocess data,
-identify potential targets for subgroup analysis, optimize reclustering,
-and annotate results. A preprint detailing the method & some biological
-results is available [on
-BioRxiv](https://doi.org/10.1101/2021.10.29.466448).
+Motivation: Single-cell RNA-sequencing (scRNA-seq) has enabled the molecular profiling of thousands to millions of cells simultaneously in biologically heterogenous samples. Currently, the common practice in scRNA-seq is to determine cell type labels through unsupervised clustering and the examination of cluster-specific genes. However, even small differences in analysis and parameter choosing can greatly alter clustering results and thus impose great influence on which cell types are identified. Existing methods largely focus on determining the optimal number of robust clusters, which can be problematic for identifying cells of extremely low abundance due to their subtle contributions toward overall patterns of gene expression.
+
+Results: Here, we present a carefully designed framework, SCISSORS, which accurately profiles subclusters within broad cluster(s) for the identification of rare cell types in scRNA-seq data. SCISSORS employs silhouette scoring for the estimation of heterogeneity of clusters and reveals rare cells in heterogenous clusters by a multi-step semi-supervised reclustering process. Additionally, SCISSORS provides a method for the identification of marker genes of high specificity to the cell type. SCISSORS is wrapped around the popular Seurat R package and can be easily integrated into existing Seurat pipelines.
+
+Availability and implementation: SCISSORS, including source code and vignettes, are freely available at https://github.com/laurapeng/scissors.
 
 ## Installation
 
 You can install the most recent version of `SCISSORS` with:
 
 ``` r
-remotes::install_github("jjyeh-unc/SCISSORS")
+remotes::install_github("laurapeng/scissors")
 ```
 
 # Usage
@@ -284,26 +281,3 @@ biologically meaningful & reproducible. For more complex analyses using
 `SCISSORS` see our manuscript, and don’t hesitate to reach out if you’d
 like help with using the package.
 
-# Contact Information
-
-This package is developed and maintained by Jack Leary. Feel free to ask
-for help via [opening an
-issue](https://github.com/jr-leary7/SCISSORS/issues) or via email
-(<jrleary@live.unc.edu>) if more detailed assistance is needed.
-
-# References
-
-1.  Leary, J. *et al*. [Sub-cluster identification through
-    semi-supervised optimization of rare cell silhouettes (SCISSORS) in
-    single-cell sequencing](https://doi.org/10.1101/2021.10.29.466448).
-    *BioRxiv* (2021).
-
-2.  10X Genomics. [3k PBMCs from a healthy donor: single cell gene
-    expression dataset by Cell Ranger
-    v1.1.0](https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/pbmc3k).
-    *10X Genomics Documentation* (2016).
-
-3.  Rousseeuw, P. [Silhouettes: A graphical aid to the interpretation
-    and validation of cluster
-    analysis](https://doi.org/10.1016/0377-0427%2887%2990125-7).
-    *Journal of Computational and Applied Mathematics* (1987).
