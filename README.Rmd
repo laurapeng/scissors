@@ -55,19 +55,6 @@ The SCISSORS package was initially released at https://github.com/jr-leary7/SCIS
 # BiocManager::install("glmGamPoi")
 ```
 
-```{r hidden-chunk, include=FALSE}
-# file.sources <- list.files("/work/users/c/h/changfei/14_sc_RNAseq/07_SCISSORS_pipeline/PBMC3K/fixed_function/",pattern="*.R")
-# file.sources <- paste("/work/users/c/h/changfei/14_sc_RNAseq/07_SCISSORS_pipeline/PBMC3K/fixed_function/", file.sources, sep="")
-# sapply(file.sources, source)
-# find.package("SCISSORS")
-# remotes::install_local("/work/users/c/h/changfei/14_sc_RNAseq/07_SCISSORS_pipeline/Readme_modify/version_20260916/scissors",force = TRUE)
-# exists("FindBroadMarkers")
-# "FindBroadMarkers" %in% getNamespaceExports("scissors")
-# exists("FindBroadMarkers", envir = asNamespace("scissors"))
-# roxygen2::roxygenise(
-#   "/work/users/c/h/changfei/14_sc_RNAseq/07_SCISSORS_pipeline/Readme_modify/version_20260916/scissors"
-# )
-```
 # Usage 
 
 ## Libraries 
@@ -199,7 +186,7 @@ DimPlot(pbmc, group.by = "broad_celltype") +
 
 To characterize the broad cell clusters, differential expression (DE) analysis is performed using the FindBroadMarkers() function. The analysis is run on the SCT assay with the Wilcoxon rank-sum test, requiring a minimum expression in 25% of cells per cluster (min.pct = 0.25), a log2 fold-change threshold of 0.25, and a false discovery rate cutoff of 0.05, and excluding genes in the top 10% of mean expression in other clusters (perc.cutoff = 0.9). For each broad cluster, the top five genes with the highest average log2 fold-change are selected as markers. 
 
-```{r broad-celltypes markers}
+```{r broad-celltypes-markers}
 pbmc_de_broad <- FindBroadMarkers(pbmc, 
                                         assay.use = "SCT",
                                         slot.use = "data",
@@ -220,7 +207,7 @@ top5_pbmc_de_broad <- pbmc_de_broad %>%
 
 Visualize the top 5 Marker Genes for Broad Cell Types that are enriched in each broad immune cell type. 
 
-```{r broad-celltypes markers plot,fig.width=10,fig.height=4}
+```{r broad-celltypes-markers-plot,fig.width=10,fig.height=4}
 DotPlot(pbmc,
         features = unique(top5_pbmc_de_broad$gene),
         dot.scale = 10,
@@ -275,7 +262,7 @@ DimPlot(mono_reclust, group.by = "seurat_clusters") +
 
 After re-clustering, markers are examined for annotation, including CD14 (classical monocytes), FCGR3A (non-classical monocytes), HLA-DRA (intermediate monocytes), LYZ (monocyte), PPBP (platelet), and FCER1A (dendritic cell or DC). These expression profiles allow finer cell labels to be assigned to each subcluster.
 
-```{r t-reclust identify subtypes}
+```{r t-reclust-identify-subtypes}
 markers <- c("FCER1A",	# DC
 "PPBP",	# Platelets
 "LYZ",	# monocyte
@@ -298,7 +285,7 @@ VlnPlot(mono_reclust,	# Intermediate monocyte
 
 The subclusters are integrated into the Seurat object, and refined subcluster annotations are assigned. These annotations are stored in the metadata column mono_dc_platelets_subcelltype and visualized using UMAP.
 
-```{r t-reclust integrate monocyte}
+```{r t-reclust-integrate-monocyte}
 mono_reclust@meta.data <- mono_reclust@meta.data %>%
   mutate(
     mono_dc_platelets_subcelltype = case_when(
@@ -330,7 +317,7 @@ DimPlot(mono_reclust, group.by = "mono_dc_platelets_subcelltype") +
 
 The expression of marker genes is further visualized across the three monocyte subtypes: classical, intermediate, and non-classical. The re-clustered object is subset to include only classical (M0), intermediate (M1), and non-classical (M2) monocytes and the expression profiles are visualized using violin plots. Wilcoxon rank-sum tests with FDR correction are applied to assess statistical differences across all pairwise subtype comparisons.
 
-```{r t-reclust check markers}
+```{r t-reclust-check-markers}
 keep_clusters <- c("M0.Classical monocyte",
                    "M1.Intermediate monocyte",
                    "M2.Non-classical monocyte")
@@ -374,7 +361,7 @@ for (Gene_tmp in gene) {
 
 The monocyte subclusters are integrated into the broader annotation framework. This is achieved by joining the re-clustered metadata with the original Seurat object and updating the annotation column broad_celltype_fine.
 
-```{r add subcluster label}
+```{r add-subcluster-label}
 mono_reclust_annotation <- levels(mono_reclust@meta.data$mono_dc_platelets_subcelltype)
 
 fine_map_tbl <- tibble(
@@ -411,7 +398,7 @@ DimPlot(pbmc, group.by = "broad_celltype_fine",cols = paletteer_d("ggthemes::Cla
 
 DCs and platelets are biologically distinct from the monocyte lineage and are thus chosen to be analyzed separately. To characterize the CD and platelet subclusters, DE analysis is performed using the FindSubtypeMarkers() function. Genes are retained only if they are significantly enriched after filtering out genes broadly expressed across other broad cell types in the full dataset. The resulting markers are then filtered to retain only those associated with the DC and platelet subclusters. For each group, the top five marker genes with the highest average log2 fold-change are selected as defining features.
 
-```{r find markers for DC and Platelets}
+```{r find-markers-DC-Platelets}
 DC_platelets_SubtypeMarkers <- FindSubtypeMarkers(obj.1 = mono_reclust,
                                                 obj.2 = pbmc,
                                                 ident.1 = "mono_dc_platelets_subcelltype",
@@ -434,7 +421,7 @@ top5_DC_platelets_SubtypeMarkers <- DC_platelets_SubtypeMarkers %>%
 
 To characterize the three monocyte subtypes, the re-clustered object is first restricted to classical, intermediate, and non-classical monocytes. DE analysis is then performed using FindSubtypeMarkers(), comparing each monocyte subtype against other monocyte subtypes, then filtering out genes broadly expressed in non-monocyte cell types. For each subtype, the top five marker genes ranked by average log2 fold-change are selected for downstream visualization.
 
-```{r find markers for Monocyte}
+```{r find-markers-Monocyte}
 keep_clusters <- c("M0.Classical monocyte","M1.Intermediate monocyte","M2.Non-classical monocyte")
 M0M1M2_seurat <- subset(mono_reclust, mono_dc_platelets_subcelltype %in%  keep_clusters)
 M0M1M2_seurat@meta.data <- M0M1M2_seurat@meta.data %>%
@@ -458,7 +445,7 @@ top5_M0M1M2_SubtypeMarkers  <- M0M1M2_SubtypeMarkers %>%
 
 ## Plot Top 5 Marker Genes for Monocyte Subclusters
 
-```{r plot top5 markers,fig.width=15,fig.height=4}
+```{r plot-top5-markers,fig.width=15,fig.height=4}
 top5_monocyte_merged <- rbind(top5_M0M1M2_SubtypeMarkers,
                               top5_DC_platelets_SubtypeMarkers)
 DotPlot(mono_reclust, 

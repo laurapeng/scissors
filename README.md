@@ -269,7 +269,7 @@ DotPlot(pbmc,
                               title.hjust = 0.5))
 ```
 
-<img src="man/figures/README-broad-celltypes markers plot-1.png" width="100%" />
+<img src="man/figures/README-broad-celltypes-markers-plot-1.png" width="100%" />
 
 ## Re-cluster Candidate Broad Clusters
 
@@ -335,7 +335,7 @@ VlnPlot(mono_reclust,   # Intermediate monocyte
      theme(axis.title.x = element_blank())
 ```
 
-<img src="man/figures/README-t-reclust identify subtypes-1.png" width="100%" />
+<img src="man/figures/README-t-reclust-identify-subtypes-1.png" width="100%" />
 
 ## Integrate Monocyte Subcluster
 
@@ -370,7 +370,7 @@ DimPlot(mono_reclust, group.by = "mono_dc_platelets_subcelltype") +
         axis.ticks = element_blank())
 ```
 
-<img src="man/figures/README-t-reclust integrate monocyte-1.png" width="100%" />
+<img src="man/figures/README-t-reclust-integrate-monocyte-1.png" width="100%" />
 
 ## Assess Marker Expression Across Monocyte Subtypes
 
@@ -422,7 +422,7 @@ for (Gene_tmp in gene) {
  grid.arrange(grobs = violinplot_list, ncol = 3)
 ```
 
-<img src="man/figures/README-t-reclust check markers-1.png" width="100%" />
+<img src="man/figures/README-t-reclust-check-markers-1.png" width="100%" />
 
 ## Add Subclusters to the Broad Cluster
 
@@ -464,7 +464,7 @@ DimPlot(pbmc, group.by = "broad_celltype_fine",cols = paletteer_d("ggthemes::Cla
         axis.ticks = element_blank())
 ```
 
-<img src="man/figures/README-add subcluster label-1.png" width="100%" />
+<img src="man/figures/README-add-subcluster-label-1.png" width="100%" />
 
 ## Find Top Marker Genes for DC and Platelets
 
@@ -557,7 +557,7 @@ DotPlot(mono_reclust,
                               title.hjust = 0.5))
 ```
 
-<img src="man/figures/README-plot top5 markers-1.png" width="100%" />
+<img src="man/figures/README-plot-top5-markers-1.png" width="100%" />
 
 # Conclusions & Best Practices
 
