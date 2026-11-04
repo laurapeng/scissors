@@ -1,4 +1,4 @@
-Package: SCISSORS
+Package: scissors
 Type: Package
 Title: Identify cell subpopulations in single cell RNA-seq data
 Version: 1.2.0
@@ -9,7 +9,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.2
 Depends:
   magrittr
 Imports:
@@ -31,6 +31,5 @@ Suggests:
   knitr, 
   phateR, 
   biomaRt
-URL: https://github.com/jr-leary7/SCISSORS
-BugReports: https://github.com/jr-leary7/SCISSORS/issues 
+URL: https://github.com/laurapeng/scissors
 VignetteBuilder: knitr
