@@ -229,7 +229,7 @@ ReclusterCells <- function(seurat.object = NULL,
                                    .combine = "c",
                                    .multicombine = ifelse(nrow(param_grid) > 1, TRUE, FALSE),
                                    .maxcombine = ifelse(nrow(param_grid) > 1, nrow(param_grid), 2),
-                                   .packages = c("SCISSORS", "Seurat"),
+                                   .packages = c("scissors", "Seurat"),
                                    .verbose = FALSE) %dopar% {
       k <- param_grid$K[j]
       r <- param_grid$R[j]
@@ -245,7 +245,7 @@ ReclusterCells <- function(seurat.object = NULL,
                                        algorithm = 1,
                                        verbose = FALSE)
       if (length(unique(levels(temp_obj$seurat_clusters))) > 1) {
-        sil_res <- SCISSORS::ComputeSilhouetteScores(seurat.obj = temp_obj)
+        sil_res <- scissors::ComputeSilhouetteScores(seurat.obj = temp_obj)
         mean_sil <- mean(sil_res)
       } else {
         # neutral placeholder value for the case when the number of identified clusters is 1
