@@ -38,6 +38,7 @@ The SCISSORS package was initially released at https://github.com/jr-leary7/SCIS
   - paletteer (version 1.6.0)
   - ggpubr (version 0.6.1)
   - gridExtra (version 2.3)
+  - tibble (version 3.2.1)
 
 ```{r install-s, eval=FALSE}
 # install.packages(c("Seurat", "SeuratData", "gridExtra", "phateR", "remotes"))
@@ -48,8 +49,9 @@ The SCISSORS package was initially released at https://github.com/jr-leary7/SCIS
 # remotes::install_version("paletteer", version = "1.6.0")
 # remotes::install_version("ggpubr", version = "0.6.1")
 # remotes::install_github("mojaveazure/seurat-object", ref = "6455e9b")
-# remotes::install_github("laurapeng/scissors") 
-# remotes::install_github("satijalab /seurat-data")
+# remotes::install_version("tibble", version = "3.2.1")
+# remotes::install_github("laurapeng/scissors", ref = "c39e72d")
+# remotes::install_github("satijalab/seurat-data")
 # 
 # install.packages("BiocManager")
 # BiocManager::install("glmGamPoi")
@@ -187,6 +189,8 @@ DimPlot(pbmc, group.by = "broad_celltype") +
 To characterize the broad cell clusters, differential expression (DE) analysis is performed using the FindBroadMarkers() function. The analysis is run on the SCT assay with the Wilcoxon rank-sum test, requiring a minimum expression in 25% of cells per cluster (min.pct = 0.25), a log2 fold-change threshold of 0.25, and a false discovery rate cutoff of 0.05, and excluding genes in the top 10% of mean expression in other clusters (perc.cutoff = 0.9). For each broad cluster, the top five genes with the highest average log2 fold-change are selected as markers. 
 
 ```{r broad-celltypes-markers}
+future::plan("sequential")
+options(future.globals.maxSize = 2 * 1024^3)
 pbmc_de_broad <- FindBroadMarkers(pbmc, 
                                         assay.use = "SCT",
                                         slot.use = "data",
@@ -239,7 +243,7 @@ Based on silhouette scores and marker-based annotations, the monocyte groups (cl
 ```{r t-reclust}
 mono_reclust <- ReclusterCells(pbmc, 
                                use.sct = TRUE, 
-                               which.clust = list(1, 4), 
+                               which.clust = c(1, 4), 
                                merge.clusters = TRUE, 
                                n.HVG = 4000,
                                n.PC = 15, 
@@ -338,12 +342,11 @@ for (Gene_tmp in gene) {
                       fill = mono_dc_platelets_subcelltype)) +
     geom_violin( scale = "width", width = 0.8) +
     stat_summary(fun = "median", geom = "point", size = 1.5) +
-    stat_compare_means(
-      method = "wilcox.test",
-      label = "p.signif",
-      comparisons = combn(keep_clusters, 2, simplify = FALSE),
+    ggpubr::geom_pwc(
+      method = "wilcox_test",
       p.adjust.method = "fdr",
-      size = 3
+      label = "p.adj.signif",
+      size = 0.3
     ) +
     theme_classic(base_size = 10) +
     labs(x = NULL, y = Gene_tmp) +

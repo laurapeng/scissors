@@ -24,17 +24,18 @@ maintenance.
 
 ## Software Requirements
 
-- R (version ≥ 4.1.0)
-- Required R packages:
-  - SCISSORS: <https://github.com/laurapeng/scissors>
-  - Seurat (version ≥ 5.2.0)
-  - SeuratData (version 0.2.2.9002)
-  - SeuratObject (version 5.1.99.9000)
-  - dplyr (version 1.1.4)
-  - ggplot2 (version 3.5.2)
-  - paletteer (version 1.6.0)
-  - ggpubr (version 0.6.1)
-  - gridExtra (version 2.3)
+-   R (version ≥ 4.1.0)
+-   Required R packages:
+    -   SCISSORS: <https://github.com/laurapeng/scissors>
+    -   Seurat (version ≥ 5.2.0)
+    -   SeuratData (version 0.2.2.9002)
+    -   SeuratObject (version 5.1.99.9000)
+    -   dplyr (version 1.1.4)
+    -   ggplot2 (version 3.5.2)
+    -   paletteer (version 1.6.0)
+    -   ggpubr (version 0.6.1)
+    -   gridExtra (version 2.3)
+    -   tibble (version 3.2.1)
 
 ``` r
 # install.packages(c("Seurat", "SeuratData", "gridExtra", "phateR", "remotes"))
@@ -45,8 +46,9 @@ maintenance.
 # remotes::install_version("paletteer", version = "1.6.0")
 # remotes::install_version("ggpubr", version = "0.6.1")
 # remotes::install_github("mojaveazure/seurat-object", ref = "6455e9b")
-# remotes::install_github("laurapeng/scissors") 
-# remotes::install_github("satijalab /seurat-data")
+# remotes::install_version("tibble", version = "3.2.1")
+# remotes::install_github("laurapeng/scissors", ref = "c39e72d")
+# remotes::install_github("satijalab/seurat-data")
 # 
 # install.packages("BiocManager")
 # BiocManager::install("glmGamPoi")
@@ -114,7 +116,7 @@ DimPlot(pbmc,pt.size = 0.75)+
           axis.ticks = element_blank())
 ```
 
-<img src="man/figures/README-umap-broad-cluster-1.png" width="100%" />
+<img src="man/figures/README-umap-broad-cluster-1.png" alt="" width="100%" />
 
 ## Compute and Visualize Silhouette Scores for Each Cluster
 
@@ -150,7 +152,7 @@ ggplot(sil_df, aes(x = Cluster, y = Score, fill = Cluster)) +    geom_violin(dra
          axis.text.y = element_text(size = 20))
 ```
 
-<img src="man/figures/README-silhouette-dist-1.png" width="100%" />
+<img src="man/figures/README-silhouette-dist-1.png" alt="" width="100%" />
 
 ## Visualize Marker Gene Expression
 
@@ -179,7 +181,7 @@ labs(y = "Expression") +
 theme(axis.title.x = element_blank())
 ```
 
-<img src="man/figures/README-broad-markers-1.png" width="100%" />
+<img src="man/figures/README-broad-markers-1.png" alt="" width="100%" />
 
 ## Annotate Broad Cell Types
 
@@ -211,7 +213,7 @@ DimPlot(pbmc, group.by = "broad_celltype") +
         axis.ticks = element_blank())
 ```
 
-<img src="man/figures/README-broad-celltypes-1.png" width="100%" />
+<img src="man/figures/README-broad-celltypes-1.png" alt="" width="100%" />
 
 ## Find Markers for Broad Clusters
 
@@ -225,6 +227,8 @@ other clusters (perc.cutoff = 0.9). For each broad cluster, the top five
 genes with the highest average log2 fold-change are selected as markers.
 
 ``` r
+future::plan("sequential")
+options(future.globals.maxSize = 2 * 1024^3)
 pbmc_de_broad <- FindBroadMarkers(pbmc, 
                                         assay.use = "SCT",
                                         slot.use = "data",
@@ -269,7 +273,7 @@ DotPlot(pbmc,
                               title.hjust = 0.5))
 ```
 
-<img src="man/figures/README-broad-celltypes-markers-plot-1.png" width="100%" />
+<img src="man/figures/README-broad-celltypes-markers-plot-1.png" alt="" width="100%" />
 
 ## Re-cluster Candidate Broad Clusters
 
@@ -287,7 +291,7 @@ optimize cluster separation while maintaining stability.
 ``` r
 mono_reclust <- ReclusterCells(pbmc, 
                                use.sct = TRUE, 
-                               which.clust = list(1, 4), 
+                               which.clust = c(1, 4), 
                                merge.clusters = TRUE, 
                                n.HVG = 4000,
                                n.PC = 15, 
@@ -296,7 +300,7 @@ mono_reclust <- ReclusterCells(pbmc,
                                redo.embedding = TRUE, 
                                random.seed = 629,
                                use.parallel = FALSE)
-#> [1] "Reclustering cells in clusters 1, 4 using k = 10 & resolution = 0.3; S = 0.432"
+#> [1] "Reclustering cells in clusters 1, 4 using k = 10 & resolution = 0.3; S = 0.428"
 
 DimPlot(mono_reclust, group.by = "seurat_clusters") + 
   scale_color_paletteer_d("ggthemes::Classic_10") +
@@ -307,7 +311,7 @@ DimPlot(mono_reclust, group.by = "seurat_clusters") +
         axis.ticks = element_blank())
 ```
 
-<img src="man/figures/README-t-reclust-1.png" width="100%" />
+<img src="man/figures/README-t-reclust-1.png" alt="" width="100%" />
 
 ## Identify Monocyte Subtypes
 
@@ -335,7 +339,7 @@ VlnPlot(mono_reclust,   # Intermediate monocyte
      theme(axis.title.x = element_blank())
 ```
 
-<img src="man/figures/README-t-reclust-identify-subtypes-1.png" width="100%" />
+<img src="man/figures/README-t-reclust-identify-subtypes-1.png" alt="" width="100%" />
 
 ## Integrate Monocyte Subcluster
 
@@ -370,7 +374,7 @@ DimPlot(mono_reclust, group.by = "mono_dc_platelets_subcelltype") +
         axis.ticks = element_blank())
 ```
 
-<img src="man/figures/README-t-reclust-integrate-monocyte-1.png" width="100%" />
+<img src="man/figures/README-t-reclust-integrate-monocyte-1.png" alt="" width="100%" />
 
 ## Assess Marker Expression Across Monocyte Subtypes
 
@@ -403,12 +407,11 @@ for (Gene_tmp in gene) {
                       fill = mono_dc_platelets_subcelltype)) +
     geom_violin( scale = "width", width = 0.8) +
     stat_summary(fun = "median", geom = "point", size = 1.5) +
-    stat_compare_means(
-      method = "wilcox.test",
-      label = "p.signif",
-      comparisons = combn(keep_clusters, 2, simplify = FALSE),
+    ggpubr::geom_pwc(
+      method = "wilcox_test",
       p.adjust.method = "fdr",
-      size = 3
+      label = "p.adj.signif",
+      size = 0.3
     ) +
     theme_classic(base_size = 10) +
     labs(x = NULL, y = Gene_tmp) +
@@ -422,7 +425,7 @@ for (Gene_tmp in gene) {
  grid.arrange(grobs = violinplot_list, ncol = 3)
 ```
 
-<img src="man/figures/README-t-reclust-check-markers-1.png" width="100%" />
+<img src="man/figures/README-t-reclust-check-markers-1.png" alt="" width="100%" />
 
 ## Add Subclusters to the Broad Cluster
 
@@ -464,7 +467,7 @@ DimPlot(pbmc, group.by = "broad_celltype_fine",cols = paletteer_d("ggthemes::Cla
         axis.ticks = element_blank())
 ```
 
-<img src="man/figures/README-add-subcluster-label-1.png" width="100%" />
+<img src="man/figures/README-add-subcluster-label-1.png" alt="" width="100%" />
 
 ## Find Top Marker Genes for DC and Platelets
 
@@ -557,7 +560,7 @@ DotPlot(mono_reclust,
                               title.hjust = 0.5))
 ```
 
-<img src="man/figures/README-plot-top5-markers-1.png" width="100%" />
+<img src="man/figures/README-plot-top5-markers-1.png" alt="" width="100%" />
 
 # Conclusions & Best Practices
 
